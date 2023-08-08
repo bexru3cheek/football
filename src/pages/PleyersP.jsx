@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Button,  Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -8,6 +8,7 @@ import {
 // import { request2 } from "../server/request2";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
+import { Pagination } from "antd";
 
 const { confirm } = Modal;
 
@@ -18,6 +19,8 @@ const PleyersP = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selected, setSelected] = useState(null);
   const [form] = Form.useForm();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(2);
 
   const albumId = JSON.parse(localStorage.getItem("ID"));
 
@@ -73,7 +76,6 @@ const PleyersP = () => {
   };
 
   async function editTeacher(id) {
-    // let { data } = await request2.get(`product/${id}`);
     let { data } = await axios.get(
       `https://64caafa0700d50e3c7053191.mockapi.io/foodbolltams/${albumId}/players/${id}`
     );
@@ -102,23 +104,42 @@ const PleyersP = () => {
     });
   }
   //   console.log(loading);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const paginatedTeachers = teachers.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
   return (
     <section>
-      <div className="players">
+      <div className=" container  players">
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
             gap: "20px",
+            marginTop: "80px",
           }}
         >
-          <Input onChange={(e) => setSearch(e.target.value)} value={search} />
-          <Button onClick={addTeacher} type="primary">
+          <Input
+            style={{ height: "50px" }}
+            onChange={(e) => setSearch(e.target.value)}
+            value={search}
+          />
+          <Button
+            style={{ height: "50px" }}
+            onClick={addTeacher}
+            type="primary"
+          >
             Add
           </Button>
         </div>
-        <div style={{ marginTop: "50px" }} className="container footbell">
-          {teachers.map(
+        <div style={{ marginTop: "50px" }} className="footbell">
+          {paginatedTeachers.map(
             ({
               name,
               image,
@@ -219,7 +240,7 @@ const PleyersP = () => {
       </div>
 
       <Modal
-        title="Adding teacher"
+        title="Adding pleyers"
         open={isModalOpen}
         onOk={submit}
         okText={selected ? "Save" : "Add"}
@@ -382,6 +403,18 @@ const PleyersP = () => {
           </div>
         </Form>
       </Modal>
+      <div
+        style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
+      >
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={teachers.length} // Ma'lumotlar to'plami uzunligi
+          showSizeChanger={false} // Elementlar sonini o'zgartirish imkoniyatini o'chirish
+          onChange={handlePageChange}
+          style={{ color: "red", fontWeight: "bold", padding: "80px" }}
+        />
+      </div>
     </section>
   );
 };

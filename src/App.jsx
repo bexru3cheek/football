@@ -8,10 +8,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<CategoriesP />} />
-          <Route path="categories" element={<CategoriesP />} />
-          <Route path="products" element={<CategoriesP />} /> 
-          <Route path="players" element={<PleyersP />} /> 
+          <Route index  element={<CategoriesP />} />
+          <Route index path="products" element={<CategoriesP />} />
+          <Route path="players" element={<PleyersP />} />
         </Route>
       </Routes>
     </BrowserRouter>
